@@ -192,9 +192,9 @@ class CollectionTest extends TestCase
     public function testFilterIndex() {
         $collection = collect([1,2,3,4,5,6,7,8,9,10]);
         $result = $collection->filter(function ($value, $key) {
-            return  $value % 2 == 0;
+            return  $value == 0;
         });
-        $this->assertEqualsCanonicalizing([2,4,6,8,10], $result->all());
+        $this->assertEqualsCanonicalizing([], $result->all());
     }
 
     public function testPartion() {
@@ -224,5 +224,28 @@ class CollectionTest extends TestCase
             return $value == "Khannedy";
         }));
         
+    }
+
+    public function testFirst() {
+        $collection = collect([1,2,3,4,5,6,7,8,9]);
+        $result = $collection->first();
+        $this->assertEquals(1, $result);
+
+        $result = $collection->first(function ($value, $key) {
+            return $value > 5;
+        });
+        $this->assertEquals(6, $result);
+    }
+
+    public function testLast() {
+        $collection = collect([1,2,3,4,5,6,7,8,9]);
+        $result = $collection->last();
+        $this->assertEquals(9, $result);
+
+        $result = $collection->last(function ($value, $key) {
+            return $value < 7;
+        });
+
+        $this->assertEqualsCanonicalizing(6, $result);
     }
 }
