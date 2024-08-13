@@ -248,4 +248,62 @@ class CollectionTest extends TestCase
 
         $this->assertEqualsCanonicalizing(6, $result);
     }
+
+    public function testRandom() {
+        $collection = collect([1,2,3,4,5,6,7,8,9]);
+        $result = $collection->random();
+        $this->assertTrue(in_array($result, [1,2,3,4,5,6,7,8,9]));
+    }
+
+    public function testCheckingExistence(){
+        $collection = collect([1,2,3,4,5,6,7,8,9]);
+        $this->assertTrue($collection->isNotEmpty());
+        $this->assertFalse($collection->isEmpty());
+        $this->assertTrue($collection->contains(1));
+        $this->assertFalse($collection->contains(10));
+        $this->assertTrue($collection->contains(function ($value) {
+            return $value == 3;
+        }));
+        
+    }
+
+    public function testOrdering() {
+        $collection = collect([1,2,3,4,5,6,7,8,9]);
+        $result = $collection->sort();
+        $this->assertEqualsCanonicalizing([1,2,3,4,5,6,7,8,9], $result->all());
+    
+        $result = $collection->sortDesc();
+        $this->assertEqualsCanonicalizing([9,8,7,6,5,4,3,2,1], $result->all());
+    }
+
+    public function testAggregate() {
+        $collection = collect([1,2,3,4,5,6,7,8,9]);
+        $result = $collection->sum();
+        $this->assertEquals($result, 45);
+    
+        $result = $collection->avg();
+        $this->assertEquals($result, 5);
+
+        $result = $collection->min();
+        $this->assertEquals($result, 1);
+
+        $result = $collection->max();
+        $this->assertEquals($result, 9);
+    }
+
+    public function testReduce() {
+        $student = [
+            ['class' => 'Math', 'score' => 60],
+            ['class' => 'English', 'score' => 61],
+            ['class' => 'Chemistry', 'score' => 50],
+            ['class' => 'Physics', 'score' => 49],
+        ];
+
+        $collection = collect($student);
+        $result = $collection->reduce(function($carry, $item) {
+            return $carry + $item["score"];
+        });
+
+        $this->assertEquals($result, 220);
+    }
 }
